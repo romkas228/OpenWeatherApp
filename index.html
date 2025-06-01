@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Погода</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #weatherResult {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Отримати погоду</h1>
+    <input type="text" id="city" placeholder="Введіть назву міста">
+    <button onclick="getWeather()">Отримати погоду</button>
+    <div id="weatherResult"></div>
+
+    <script>
+        const API_KEY = "0ce1c315921454c87e56bad3c9c5cda1"; // Замініть на ваш API-ключ від OpenWeatherMap
+
+        function getWeather() {
+            const city = document.getElementById("city").value;
+            const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Місто не знайдено");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const temperature = data.main.temp;
+                    const humidity = data.main.humidity;
+                    const description = data.weather[0].description;
+                    document.getElementById("weatherResult").innerHTML = `
+                        <p>Температура: ${temperature} °C</p>
+                        <p>Вологість: ${humidity} %</p>
+                        <p>Опис погоди: ${description}</p>
+                    `;
+                })
+                .catch(error => {
+                    document.getElementById("weatherResult").innerHTML = `<p>${error.message}</p>`;
+                });
+        }
+    </script>
+</body>
+</html>
